@@ -1,7 +1,7 @@
-from fastapi import FastAPI # type: ignore
-from pydantic import BaseModel, Field # type: ignore
-import joblib # type: ignore
-import numpy as np # type: ignore
+from fastapi import FastAPI 
+from pydantic import BaseModel, Field 
+import joblib
+import numpy as np 
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
