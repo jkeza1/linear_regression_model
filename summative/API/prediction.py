@@ -6,7 +6,7 @@ from typing import List
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 # Load the trained model
-model = joblib.load(r"C:\Users\HP\linear_regression_model\summative\linear_regression\risk_level_model.pkl")
+model = joblib.load("summative/linear_regression/risk_level_model.pkl)")
 
 # Define the input data model (request body)
 class PredictionRequest(BaseModel):
