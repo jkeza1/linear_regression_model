@@ -1,57 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/services/api_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Health Prediction',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const PredictionPage(),
+    );
+  }
+}
 
 class PredictionPage extends StatefulWidget {
   const PredictionPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _PredictionPageState createState() => _PredictionPageState();
 }
 
 class _PredictionPageState extends State<PredictionPage> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _bodyTempController = TextEditingController();
   final TextEditingController _heartRateController = TextEditingController();
 
   double _systolicBP = 120.0;
-  String _diastolicBP = "80";
+  int _diastolicBP = 80; // diastolic BP as integer
   double _bloodGlucose = 90.0;
   String _predictionResult = '';
-  String _errorMessage = ''; // For displaying error messages
+  String _errorMessage = '';
 
   // Function to handle form submission and prediction
   Future<void> _makePrediction() async {
     if (_formKey.currentState!.validate()) {
+      // Prepare data to send to the API
       Map<String, dynamic> data = {
-        'age': int.parse(_ageController.text),
-        'systolic_bp': _systolicBP,
-        'diastolic_bp': int.parse(_diastolicBP),
-        'blood_glucose': _bloodGlucose,
-        'body_temp': double.parse(_bodyTempController.text),
-        'heart_rate': int.parse(_heartRateController.text),
+        'age': int.parse(_ageController.text), // Convert age to int
+        'systolic_bp': _systolicBP.toInt(), // Ensure systolic BP is an int
+        'diastolic_bp': _diastolicBP, // Diastolic BP is already int
+        'blood_glucose': _bloodGlucose, // Blood glucose is a float
+        'body_temp': double.parse(_bodyTempController.text), // Body temperature is a float
+        'heart_rate': int.parse(_heartRateController.text), // Convert heart rate to int
       };
 
       try {
-        ApiService apiService = ApiService();
-        var result = await apiService.sendData(data);
-        print('API Response: $result');
+        // Send data to the FastAPI backend
+        final response = await http.post(
+          Uri.parse('http://127.0.0.1:8000/predict'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(data),
+        );
 
-        setState(() {
-          _errorMessage = '';  // Clear any previous error message
-          if (result != null && result.containsKey('prediction')) {
-            _predictionResult = result['prediction'].toString();
-          } else {
-            _predictionResult = 'No prediction received';
-          }
-        });
+        if (response.statusCode == 200) {
+          // If the server returns a successful response
+          final result = json.decode(response.body);
+          setState(() {
+            if (result.containsKey('predicted_risk_level')) {  // Adjusted key
+              _predictionResult = result['predicted_risk_level'].toString();  // Adjusted key
+            } else {
+              _predictionResult = 'No prediction received';
+            }
+          });
+        } else {
+          setState(() {
+            _errorMessage = 'Error: ${response.statusCode}';
+          });
+        }
       } catch (e) {
         setState(() {
           _predictionResult = '';
           _errorMessage = 'Error: $e';
         });
-        print("Error: $e");
       }
     }
   }
@@ -60,12 +90,12 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enter Health Data'),
+        title: const Text('Health Data Prediction'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(  // Wrap the Column with SingleChildScrollView
+        child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
@@ -85,7 +115,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Systolic BP Stepper
+                // Systolic BP Slider
                 Text('Systolic Blood Pressure: ${_systolicBP.toStringAsFixed(0)} mmHg', style: const TextStyle(fontSize: 16)),
                 Row(
                   children: [
@@ -113,10 +143,10 @@ class _PredictionPageState extends State<PredictionPage> {
 
                 // Diastolic BP Dropdown
                 const Text('Diastolic Blood Pressure:', style: TextStyle(fontSize: 16)),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<int>(
                   value: _diastolicBP,
                   decoration: const InputDecoration(border: OutlineInputBorder()),
-                  items: ["60", "65", "70", "75", "80", "85", "90", "95", "100", "110", "120"]
+                  items: [60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120]
                       .map((value) => DropdownMenuItem(value: value, child: Text('$value mmHg')))
                       .toList(),
                   onChanged: (value) => setState(() => _diastolicBP = value!),
