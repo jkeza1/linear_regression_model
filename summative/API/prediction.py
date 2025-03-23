@@ -1,9 +1,9 @@
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
-import joblib
-import numpy as np
+from fastapi import FastAPI # type: ignore
+from pydantic import BaseModel, Field # type: ignore
+import joblib # type: ignore
+import numpy as np # type: ignore
 from typing import List
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 # Load the trained model
 model = joblib.load(r"C:\Users\HP\linear_regression_model\summative\linear_regression\risk_level_model.pkl")
