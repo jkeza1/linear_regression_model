@@ -1,56 +1,66 @@
-from fastapi import FastAPI 
-from pydantic import BaseModel, Field 
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, confloat, conint
 import joblib
-import numpy as np 
-from typing import List
-import os
-from fastapi.middleware.cors import CORSMiddleware # type: ignore
+import numpy as np
+import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
+import os  # Import the os module for path handling
 
-# Load the trained model
-# Get the absolute directory of the current script
+# Load the best model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the absolute path to the model file
-model_path = os.path.join(BASE_DIR, "../linear_regression/risk_level_model.pkl")
+model_path = os.path.join(BASE_DIR, "../linear_regression/best_model.pkl")
 
 # Load the trained model
-model = joblib.load(model_path)
+try:
+    model = joblib.load(model_path)
+except Exception as e:
+    raise RuntimeError(f"Failed to load the model from {model_path}. Error: {e}")
 
+# Define the input data model using Pydantic
+class PredictionInput(BaseModel):
+    Age:int  # Age must be between 18 and 100
+    SystolicBP: int  # Systolic BP must be between 80 and 200
+    DiastolicBP: int  # Diastolic BP must be between 60 and 120
+    Blood_glucose: float # Blood glucose must be between 70.0 and 200.0
+    HeartRate: int # Heart rate must be between 60 and 120
 
-# Define the input data model (request body)
-class PredictionRequest(BaseModel):
-    age: int
-    systolic_bp: int
-    diastolic_bp: int
-    blood_glucose: float
-    body_temp: float
-    heart_rate: int
-
-# Create FastAPI app
-app = FastAPI()
-
-# Add CORS middleware to allow cross-origin requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (You can restrict this to specific URLs)
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+# Initialize FastAPI app
+app = FastAPI(
+    title="Body Temperature Prediction API",
+    description="API for predicting body temperature using a trained DecisionTreeRegressor model."
 )
 
-# Define prediction endpoint
-@app.post("/prediction")
-async def predict(request: PredictionRequest):
-    # Extract input data from the request
-    input_data = np.array([
-        [request.age, request.systolic_bp, request.diastolic_bp, request.blood_glucose, request.body_temp, request.heart_rate]
-    ])
-    
-    # Make prediction using the model
-    prediction = model.predict(input_data)[0]
-    
-    return {"prediction": "Normal" if prediction == 0 else "High Risk"}
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
+# Define the prediction endpoint
+@app.post("/predict")
+def predict(input_data: PredictionInput):
+    try:
+        # Convert input data to a DataFrame
+        input_dict = input_data.dict()
+        input_df = pd.DataFrame([input_dict])
 
-# Run the app (use uvicorn to serve the FastAPI app in development)
-# To run locally: uvicorn main:app --reload
+        # Rename columns to match the model's training data
+        input_df.columns = ['Age', 'SystolicBP', 'DiastolicBP', 'Blood glucose', 'HeartRate']
+
+        # Make prediction
+        prediction = model.predict(input_df)[0]
+
+        # Return the prediction
+        return {"predicted_body_temperature": float(prediction)}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Run the API
+#if __name__ == "__main__":
+    #import uvicorn
+    #uvicorn.run(app, host="0.0.0.0", port=8000)
