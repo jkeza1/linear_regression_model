@@ -3,10 +3,18 @@ from pydantic import BaseModel, Field
 import joblib
 import numpy as np 
 from typing import List
+import os
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 # Load the trained model
-model = joblib.load("summative/linear_regression/risk_level_model.pkl")
+# Get the absolute directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the absolute path to the model file
+model_path = os.path.join(BASE_DIR, "../linear_regression/risk_level_model.pkl")
+
+# Load the trained model
+model = joblib.load(model_path)
 
 
 # Define the input data model (request body)
@@ -31,7 +39,7 @@ app.add_middleware(
 )
 
 # Define prediction endpoint
-@app.post("/predict")
+@app.post("/prediction")
 async def predict(request: PredictionRequest):
     # Extract input data from the request
     input_data = np.array([
@@ -41,8 +49,8 @@ async def predict(request: PredictionRequest):
     # Make prediction using the model
     prediction = model.predict(input_data)[0]
     
-    # Return the prediction result
-    return {"predicted_risk_level": int(prediction)}
+    return {"prediction": "Normal" if prediction == 0 else "High Risk"}
+
 
 # Run the app (use uvicorn to serve the FastAPI app in development)
 # To run locally: uvicorn main:app --reload
