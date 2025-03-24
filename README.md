@@ -7,8 +7,6 @@
 ## 📌 Overview
 This machine learning system predicts human body temperature using key health metrics. By analyzing relationships between vital signs and thermal regulation, it provides accurate temperature forecasts without direct measurement.
 
- ## 📌 Overview
-This machine learning system predicts human body temperature using key health metrics. By analyzing relationships between vital signs and thermal regulation, it provides accurate temperature forecasts without direct measurement.
 
 ## 📌 Project Overview
 This system predicts body temperature based on five health parameters:
