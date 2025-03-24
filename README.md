@@ -37,13 +37,14 @@ This system predicts body temperature based on five health parameters:
   "HeartRate": 72
 }
 
-# Example Response:
+ ## Example Response:
 {
   "predicted_body_temperature": 98.34
 }
 
 ## 🛠️ Installation Guide
-# Clone repository:
+
+**Clone repository:
 
 ```
 git clone https://github.com/jkeza1/linear_regression_model.git
