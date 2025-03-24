@@ -78,10 +78,15 @@ flutter run
 
 ## 📂 Repository Structure
 linear_regression_model/
+
 ├── summative/
-│   ├── linear_regression/    # Jupyter notebook & dataset
-│   ├── API/                  # FastAPI implementation
-│   └── my_flutter_app/           # Mobile application
+
+│   ├── linear_regression/  
+# Jupyter notebook & dataset
+│   ├── API/         
+# FastAPI implementation
+│   └── my_flutter_app/  
+# Mobile application
 └── README.md
 
 ## License
