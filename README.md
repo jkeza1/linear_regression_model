@@ -96,5 +96,4 @@ This version:
 6. Maintains clean file structure
 
 
-
-                                                                                                                                                    MIT License © 2023 Joan Keza
+       MIT License © 2023 Joan Keza
