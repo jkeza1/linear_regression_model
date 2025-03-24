@@ -48,7 +48,7 @@ This system predicts body temperature based on five health parameters:
 
 ## 🛠️ Installation Guide
 
-**Clone repository:
+**Clone repository**:
 
 git clone https://github.com/jkeza1/linear_regression_model.git
 cd linear_regression_model
@@ -64,3 +64,13 @@ uvicorn prediction:app --reload
 
 # Launch Flutter app
 cd ../../my_flutter_app
+flutter pub get
+flutter run
+
+## 📂 Repository Structure
+linear_regression_model/
+├── summative/
+│   ├── linear_regression/    # Jupyter notebook & dataset
+│   ├── API/                  # FastAPI implementation
+│   └── my_flutter_app/           # Mobile application
+└── README.md
