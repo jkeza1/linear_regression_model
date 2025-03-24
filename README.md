@@ -4,6 +4,12 @@
 [![API Status](https://img.shields.io/website?url=https%3A%2F%2Flinear-regression-model-10-l1dl.onrender.com%2Fpredict)](https://linear-regression-model-10-l1dl.onrender.com/predict)
 [![Demo Video](https://img.shields.io/badge/2_Min_Demo-YouTube-red)](https://youtu.be/12yGa9exx0s)
 
+## 📌 Overview
+This machine learning system predicts human body temperature using key health metrics. By analyzing relationships between vital signs and thermal regulation, it provides accurate temperature forecasts without direct measurement.
+
+ ## 📌 Overview
+This machine learning system predicts human body temperature using key health metrics. By analyzing relationships between vital signs and thermal regulation, it provides accurate temperature forecasts without direct measurement.
+
 ## 📌 Project Overview
 This system predicts body temperature based on five health parameters:
 1. Age (years)
@@ -12,6 +18,11 @@ This system predicts body temperature based on five health parameters:
 4. Blood Glucose Level (mg/dL)
 5. Heart Rate (bpm)
 
+## 🛠️ Technical Components
+1. **ML Model**: Random Forest regression (MSE: 0.35)
+2. **API**: FastAPI endpoint with Swagger docs
+3. **Mobile**: Flutter cross-platform application
+4. 
 ## 🎥 Video Demo
 [![Demo Thumbnail](https://img.youtube.com/vi/12yGa9exx0s/maxresdefault.jpg)](https://youtu.be/12yGa9exx0s)
 
