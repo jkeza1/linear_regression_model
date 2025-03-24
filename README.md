@@ -1,104 +1,34 @@
-# linear_regression_model
+# 🌡️ Health Metrics to Body Temperature Prediction System
 
-# Body Temperature Prediction System
+[![Flutter](https://img.shields.io/badge/Flutter-3.13-blue)](https://flutter.dev)
+[![API Status](https://img.shields.io/website?url=https%3A%2F%2Flinear-regression-model-10-l1dl.onrender.com%2Fpredict)](https://linear-regression-model-10-l1dl.onrender.com/predict)
+[![Demo Video](https://img.shields.io/badge/2_Min_Demo-YouTube-red)](https://youtu.be/12yGa9exx0s)
 
-![App Demo](https://img.shields.io/badge/Demo-YouTube-red) ![API Status](https://img.shields.io/badge/API-Live-brightgreen) ![Flutter](https://img.shields.io/badge/Flutter-3.13-blue)
+## 📌 Project Overview
+This system predicts body temperature based on five health parameters:
+1. Age (years)
+2. Systolic Blood Pressure (mmHg)
+3. Diastolic Blood Pressure (mmHg)  
+4. Blood Glucose Level (mg/dL)
+5. Heart Rate (bpm)
 
-A complete system for predicting body temperature using health metrics, featuring:
-- Machine Learning model (Notebook)
-- Flask API backend
-- Flutter mobile application
-
-## 📺 Video Demo
-
-[![Watch the Demo](https://img.youtube.com/vi/12yGa9exx0s/maxresdefault.jpg)](https://youtu.be/12yGa9exx0s)
-
-*Click the image above to watch the 2-minute demo video*
-
-## 🔌 API Endpoint
-
-**Live Prediction API**:  
-`https://linear-regression-model-10-l1dl.onrender.com/predict`
-
-**Interactive Documentation**:  
-[Swagger UI](https://linear-regression-model-10-l1dl.onrender.com/docs)
-
-**Example Usage**:
-```bash
-curl -X POST "https://linear-regression-model-10-l1dl.onrender.com/predict" \
--H "Content-Type: application/json" \
--d '{"Age":35,"SystolicBP":118,"DiastolicBP":76,"Blood_glucose":92,"HeartRate":68}'
-
-
-
-🌡️ Health Metrics to Body Temperature Prediction System
-Flutter
-Python
-API Status
-Demo Video
-
-📌 Table of Contents
-Project Overview
-
-Video Demo
-
-Live API
-
-Installation Guide
-
-Project Structure
-
-Model Development
-
-API Implementation
-
-Flutter App
-
-License
-
-🎯 Project Overview
-This system predicts body temperature based on five health parameters using machine learning:
-
-Age (years)
-
-Systolic Blood Pressure (mmHg)
-
-Diastolic Blood Pressure (mmHg)
-
-Blood Glucose Level (mg/dL)
-
-Heart Rate (bpm)
-
-The project implements:
-
-Linear regression model trained on health metrics
-
-Production API with FastAPI
-
-Cross-platform Flutter mobile app
-
-🎥 Video Demo
-Demo Thumbnail
+## 🎥 Video Demo
+[![Demo Thumbnail](https://img.youtube.com/vi/12yGa9exx0s/maxresdefault.jpg)](https://youtu.be/12yGa9exx0s)
 
 2-minute demo covering:
+- Mobile app prediction
+- Swagger UI API testing
+- Model performance comparison
 
-Mobile app prediction workflow
+## 🔗 Live API Documentation
+**Swagger UI**:  
+[API Docs](https://linear-regression-model-10-l1dl.onrender.com/docs#/)
 
-Swagger UI API testing
+**Endpoint**:  
+`POST https://linear-regression-model-10-l1dl.onrender.com/predict`
 
-Model performance comparison
-
-🔗 Live API Documentation
-Interactive API Docs:
-Swagger UI
-
-Prediction Endpoint:
-POST https://linear-regression-model-10-l1dl.onrender.com/predict
-
-Example Request:
-
-json
-Copy
+**Example Request**:
+```json
 {
   "Age": 32,
   "SystolicBP": 115,
@@ -106,37 +36,27 @@ Copy
   "Blood_glucose": 89,
   "HeartRate": 72
 }
-Example Response:
 
-json
-Copy
+# Example Response:
 {
-  "predicted_body_temperature": 98.34,
-  "confidence": 0.92
+  "predicted_body_temperature": 98.34
 }
-🛠️ Installation Guide
-1. Clone Repository
-bash
-Copy
-git clone https://github.com/yourusername/health-temperature-prediction.git
-cd health-temperature-prediction
-2. Model Development (Jupyter Notebook)
-bash
-Copy
-cd linear_regression_model/summative/linear_regression
+
+## 🛠️ Installation Guide
+# Clone repository:
+
+```
+git clone https://github.com/jkeza1/linear_regression_model.git
+cd linear_regression_model
+
+# Run Jupyter notebook
+cd summative/linear_regression
 jupyter notebook multivariate.ipynb
-3. API Setup
-bash
-Copy
+
+# Start API
 cd ../API
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 uvicorn prediction:app --reload
-4. Flutter App
-bash
-Copy
-cd ../../FlutterApp
-flutter pub get
-flutter run
+
+# Launch Flutter app
+cd ../../my_flutter_app
