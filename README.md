@@ -42,11 +42,14 @@ This system predicts body temperature based on five health parameters:
   "predicted_body_temperature": 98.34
 }
 
+
+
+```
+
 ## 🛠️ Installation Guide
 
 **Clone repository:
 
-```
 git clone https://github.com/jkeza1/linear_regression_model.git
 cd linear_regression_model
 
