@@ -1,121 +1,216 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-class PredictionPage extends StatefulWidget {
-  const PredictionPage({super.key});
+class PredictionResultScreen extends StatelessWidget {
+  final String temperature;
+  final Map<String, String> inputValues;
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _PredictionPageState createState() => _PredictionPageState();
-}
-
-class _PredictionPageState extends State<PredictionPage> {
-  final _formKey = GlobalKey<FormState>();
-  final Map<String, String> _inputValues = {
-    'Age': '',
-    'SystolicBP': '',
-    'DiastolicBP': '',
-    'Blood_glucose': '',
-    'HeartRate': '',
-  };
-  String _predictionResult = '';
-
-  // Function to call the API
-  Future<void> _predict() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      try {
-        const String baseUrl = 'https://linear-regression-model-10-l1dl.onrender.com';
-        const String predictPath = 'predict';
-        final url = Uri.parse('$baseUrl/$predictPath');
-
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(_inputValues),
-        );
-
-        if (response.statusCode == 200) {
-          final responseBody = jsonDecode(response.body);
-          // Extract the predicted body temperature
-          final predictedTemperature = responseBody['predicted_body_temperature'];
-          setState(() {
-            _predictionResult = 'Predicted Body Temperature: $predictedTemperature°F';
-          });
-        } else {
-          throw Exception('Failed to load prediction: ${response.statusCode}');
-        }
-      } catch (e) {
-        setState(() {
-          _predictionResult = 'Error: ${e.toString()}';
-        });
-      }
-    }
-  }
+  const PredictionResultScreen({
+    super.key,
+    required this.temperature,
+    required this.inputValues,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Determine temperature status and color
+    double? tempValue = double.tryParse(temperature);
+    String tempStatus = 'Normal';
+    Color statusColor = Colors.green;
+    
+    if (tempValue != null) {
+      if (tempValue < 97.0) {
+        tempStatus = 'Below Normal';
+        statusColor = Colors.blue;
+      } else if (tempValue > 99.0) {
+        tempStatus = 'Above Normal';
+        statusColor = Colors.orange;
+      }
+      if (tempValue > 100.4) {
+        tempStatus = 'Fever';
+        statusColor = Colors.red;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prediction Page'),
+        title: const Text('Prediction Results'),
+        backgroundColor: const Color(0xFF2E7D32),
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // Input field for Age
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Age'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => _inputValues['Age'] = value!,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              // Input field for SystolicBP
-              TextFormField(
-                decoration: InputDecoration(labelText: 'SystolicBP'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => _inputValues['SystolicBP'] = value!,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              // Input field for DiastolicBP
-              TextFormField(
-                decoration: InputDecoration(labelText: 'DiastolicBP'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => _inputValues['DiastolicBP'] = value!,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              // Input field for Blood Glucose
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Blood Glucose'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => _inputValues['Blood_glucose'] = value!,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              // Input field for Heart Rate
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Heart Rate'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => _inputValues['HeartRate'] = value!,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              SizedBox(height: 20),
-              // Predict button
-              ElevatedButton(
-                onPressed: _predict,
-                child: Text('Predict'),
-              ),
-              SizedBox(height: 20),
-              // Display prediction result or error message
-              Text(
-                _predictionResult,
-                style: TextStyle(fontSize: 18),
-              ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF2E7D32),
+              Color(0xFFF5F5F5),
             ],
+            stops: [0.0, 0.3],
           ),
         ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Predicted Body Temperature',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2E7D32),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: statusColor.withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                            border: Border.all(
+                              color: statusColor,
+                              width: 3,
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${double.tryParse(temperature)?.toStringAsFixed(1) ?? temperature}°F',
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: statusColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  tempStatus,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: statusColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Input Parameters',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2E7D32),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Expanded(
+                            child: ListView(
+                              children: [
+                                _buildParameterRow('Age', inputValues['Age'] ?? '-', Icons.person),
+                                _buildParameterRow('Systolic BP', inputValues['SystolicBP'] ?? '-', Icons.favorite),
+                                _buildParameterRow('Diastolic BP', inputValues['DiastolicBP'] ?? '-', Icons.favorite_border),
+                                _buildParameterRow('Blood Glucose', inputValues['Blood_glucose'] ?? '-', Icons.opacity),
+                                _buildParameterRow('Heart Rate', inputValues['HeartRate'] ?? '-', Icons.monitor_heart),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E7D32),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: const Text(
+                      'NEW PREDICTION',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildParameterRow(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF2E7D32), size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
