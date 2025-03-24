@@ -20,7 +20,7 @@ This system predicts body temperature based on five health parameters:
 1. **ML Model**: Random Forest regression (MSE: 0.35)
 2. **API**: FastAPI endpoint with Swagger docs
 3. **Mobile**: Flutter cross-platform application
-4. 
+ 
 ## 🎥 Video Demo
 [![Demo Thumbnail](https://img.youtube.com/vi/12yGa9exx0s/maxresdefault.jpg)](https://youtu.be/12yGa9exx0s)
 
@@ -31,7 +31,7 @@ This system predicts body temperature based on five health parameters:
 
 ## 🔗 Live API Documentation
 **Swagger UI**:  
-[API Docs](https://linear-regression-model-10-l1dl.onrender.com/docs#/)
+[API Docs][(https://linear-regression-model-10-l1dl.onrender.com/docs#/)]
 
 **Endpoint**:  
 `POST https://linear-regression-model-10-l1dl.onrender.com/predict`
@@ -83,3 +83,18 @@ linear_regression_model/
 │   ├── API/                  # FastAPI implementation
 │   └── my_flutter_app/           # Mobile application
 └── README.md
+
+## License
+
+
+This version:
+1. Uses simple Markdown formatting
+2. Includes all required sections
+3. Provides clear installation steps
+4. Shows API documentation
+5. Links to demo video
+6. Maintains clean file structure
+
+You can copy and paste this directly into your README.md file. All technical details are included while keeping it concise and easy to read.
+
+MIT License © 2023 Joan Keza
