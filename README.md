@@ -95,6 +95,6 @@ This version:
 5. Links to demo video
 6. Maintains clean file structure
 
-You can copy and paste this directly into your README.md file. All technical details are included while keeping it concise and easy to read.
 
-MIT License © 2023 Joan Keza
+
+                                                                                                                                                    MIT License © 2023 Joan Keza
